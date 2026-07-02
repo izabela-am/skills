@@ -11,11 +11,31 @@ user's study state on disk yourself; there is no manual copy-paste loop.
 
 ## State on disk (you read and write these)
 
-All paths below are **relative to this skill's own directory** (the directory containing
-this `SKILL.md`). Resolve them there, not against the current working directory.
+State lives in a **separate git repo**, NOT in this skill's directory. The base is:
 
 ```
-<skill-dir>/
+~/dev/study-sessions/
+```
+
+All paths below are **relative to that repo root** — resolve them there (expanding `~` to
+the current machine's home), not against this skill's directory and not against the current
+working directory. **Do not create or scaffold the repo/dirs until *after* the legacy-migration
+check below** — creating them first makes the repo look non-empty and defeats migration. Keeping
+study state in its own repo means it survives plugin updates, is versioned by the user, and stays
+portable across machines (clone the repo to `~/dev/study-sessions` on each one).
+
+**Skill assets stay in the skill dir — never confuse them with state.** These ship with this
+`SKILL.md` in **this skill's own directory** and are read-only templates, *never* study state and
+*never* migrated:
+- `curriculum-template.md` — blank template for authoring a new subject's `curriculum.md`.
+- `index-template.md` — format reference for a new `index.md`.
+- `starters/<subject>/` — optional prebuilt starter curricula (e.g. `starters/dsa/`) to seed a
+  brand-new subject from, instead of authoring blank.
+
+Only the generated files listed below ever live in `~/dev/study-sessions/`.
+
+```
+~/dev/study-sessions/
   index.md                 # active subjects + last-touched + shaky/deferred/stale rollup
   subjects/<subject>/
     curriculum.md          # HOT  — topics, deps, per-topic status, placement verdict
@@ -23,6 +43,41 @@ this `SKILL.md`). Resolve them there, not against the current working directory.
     progress-archive.md    # COLD — rotated old entries (only if progress.md gets long)
     flashcards.md          # COLD — insight/gotcha cards
 ```
+
+**Legacy state migration (per-subject, runs before repo creation and before any flow reads subject
+state).** Older versions stored state in *this skill's own directory* rather than the repo. Run
+this **the first time you touch a given subject in a session**, in this order — it gates *every*
+flow that treats a subject missing from the repo as new (resume, "Plan a curriculum for X", "New
+topic: X", placement):
+
+1. **Check the skill dir for legacy state first, before creating or scaffolding anything in the
+   repo.** The skill no longer ships anything at `index.md` or `subjects/` (its templates live at
+   `index-template.md`, `curriculum-template.md`, and `starters/` — see above). So an `index.md`
+   or a `subjects/<subject>/` directory in the skill's own directory can *only* be real user state
+   written by an older version — there is no scaffold to confuse it with, whatever its contents.
+2. **Migrate per subject — not all-or-nothing.** For each legacy `subjects/<subject>/` in the skill
+   dir, if **that subject is missing from the repo** (`~/dev/study-sessions/subjects/<subject>/`
+   doesn't exist), tell the user and **move** it into the repo — *even if the repo already contains
+   other subjects*. The presence of some subjects in the repo must never skip a different legacy
+   one. Migrate everything for that subject, including a planned-but-unstarted `curriculum.md`
+   (topics + `deps:`, no statuses yet). Then merge that subject's row from the legacy `index.md`
+   into the repo's `index.md` — creating the repo `index.md` from `index-template.md` if absent,
+   and **never overwriting rows for subjects already there**.
+2a. **When a subject exists in *both* the repo and the skill dir, never silently drop either** —
+   the legacy copy may hold *newer* progress (e.g. the user studied on this machine before the
+   shared repo existed). Compare them: only if the legacy copy is identical to, or strictly older
+   than, the repo copy (it has no `progress.md` entries and no `status:`/placement verdicts the
+   repo lacks) may you discard the legacy one — the repo wins. **Otherwise stop and ask the user to
+   reconcile:** show what each side has (newest `progress.md` dates, differing per-topic statuses)
+   and offer to merge (prepend the legacy `progress.md` entries the repo is missing; take the
+   more-advanced `status:` per topic). Never delete legacy state containing history the repo lacks
+   until the user has confirmed the merge.
+3. **Only after that:** if the subject still has no `curriculum.md` in the repo, create/scaffold
+   it fresh.
+
+Never treat a previously-studied (or previously-planned) subject as new just because it's absent
+from the repo — check the skill dir for that subject first, and don't scaffold it before the check.
+Once a subject is moved its legacy dir is gone, so each subject migrates at most once.
 
 **Token discipline (important):**
 - On resume, read `curriculum.md` (small) + only the **top entry** of `progress.md`
@@ -56,6 +111,11 @@ this `SKILL.md`). Resolve them there, not against the current working directory.
 
 - **"Studying X, left off at Y"** — resume subject X (read its state, confirm, continue).
 - **"New topic: X, I'm a beginner"** — primer first, then Socratic.
+- **"Plan a curriculum for X"** — if the skill ships a `starters/<subject>/` for X, offer to seed
+  from it; otherwise draft topics + `deps:` from `curriculum-template.md` (both are skill assets in
+  **this skill's own directory** — *not* the state repo). Save the result to
+  `~/dev/study-sessions/subjects/<subject>/curriculum.md`. Required for a new subject before
+  placement can run.
 - **"I've got N minutes"** — scope the session (see Time scoping).
 - **"Just explain this one" / "stop asking, tell me"** — drop Socratic for this bit.
 - **"Go deeper" / "first principles"** — push past the surface.
@@ -142,13 +202,19 @@ scheduler — if the user wants real SRS, offer an Anki-style export, don't buil
 
 ## Session lifecycle
 
-1. User names a subject → read its `curriculum.md` + top of `progress.md`.
-2. **Confirm before teaching:** echo where you're resuming from + the next step, get a "yes"
-   (never resume silently). If no state exists, run **placement**.
-3. Confirm today's focus + time; scope accordingly.
-4. Run the **per-topic probe**, teach (primer → Socratic → application), enforce the **gate**.
-5. Write state changes **live** as they happen.
-6. On "wrap up": compose the prose entry (covered / solid / shaky / next step / open questions),
+1. User names a subject → run the **legacy-state migration check** (see "State on disk") before
+   deciding anything is new, then read its `curriculum.md` + top of `progress.md`.
+2. **Brand-new subject (no `curriculum.md` after migration):** author one *before* placement —
+   seed from `starters/<subject>/` if the skill ships one, else draft topics + `deps:` with the
+   user from `curriculum-template.md` (both read from **this skill's own directory**, not the state
+   repo). Save it to `~/dev/study-sessions/subjects/<subject>/curriculum.md`. Placement walks this
+   file, so it cannot run until it exists.
+3. **Confirm before teaching:** echo where you're resuming from + the next step, get a "yes"
+   (never resume silently). If a curriculum exists but has no statuses yet, run **placement**.
+4. Confirm today's focus + time; scope accordingly.
+5. Run the **per-topic probe**, teach (primer → Socratic → application), enforce the **gate**.
+6. Write state changes **live** as they happen.
+7. On "wrap up": compose the prose entry (covered / solid / shaky / next step / open questions),
    prepend it to `progress.md`, update `index.md`, and suggest a commit.
 
 ## What NOT to do
