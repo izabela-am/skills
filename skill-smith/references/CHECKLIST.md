@@ -21,6 +21,7 @@ Run every item against the finished skill. Fix what fails; only the user can wai
 ## Lean-ness
 
 - [ ] No no-ops: every sentence changes behaviour versus the default
+- [ ] Positive prompting: behaviour steered by stating the target, not by prohibition; any prohibition left standing is a hard guardrail paired with what to do instead
 - [ ] Single source of truth: each meaning defined in exactly one place
 - [ ] Restated concepts collapsed into leading words where one exists
 

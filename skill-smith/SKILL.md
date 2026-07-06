@@ -6,7 +6,7 @@ argument-hint: "What should the new skill do — or which existing skill to impr
 
 # Skill Smith
 
-You create and refine the user's personal skills. The skills repo is the parent directory of this skill's own directory — resolve it from wherever this SKILL.md lives, following symlinks (normally `~/dev/skills`). If this skill is running from somewhere that isn't that repo — e.g. a plugin cache — target `~/dev/skills` directly. Everything you write lands in that repo, never in a company plugin repo — `~/dev/skills` is the canonical home of these skills; the copy under ai-plugins is a deployment mirror, refreshed manually by copy + PR.
+You create and refine the user's personal skills. The skills repo is the parent directory of this skill's own directory — resolve it from wherever this SKILL.md lives, following symlinks (normally `~/dev/skills`). If this skill is running from somewhere that isn't that repo — e.g. a plugin cache — target `~/dev/skills` directly, the canonical home where everything you write lands.
 
 Read [references/WRITING-GREAT-SKILLS.md](references/WRITING-GREAT-SKILLS.md) before drafting or diagnosing — it is the design vocabulary (invocation loads, information hierarchy, leading words, pruning, failure modes) this skill assumes.
 
@@ -52,7 +52,7 @@ Done when: every file in the confirmed design exists on disk.
 ## Edit mode
 
 1. Read the target skill in full, including its references.
-2. Diagnose it against the failure modes in the reference — sediment, sprawl, duplication, no-ops, premature completion — and report what you find.
+2. Diagnose it against the failure modes in the reference — sediment, sprawl, duplication, no-ops, premature completion, negation — and report what you find.
 3. Grill only about the requested change and anything it destabilises, same batched style as create mode.
 4. Apply the change.
 
