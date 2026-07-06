@@ -1,6 +1,7 @@
 ---
 name: learned
 description: Distill the generalizable concepts from the current work session into atomic zettels in the Obsidian vault at ~/dev/vault. Use at the end of a meaty session, or when the user says "/learned", "save what we learned", "that's worth a zettel", or wants a session insight in their second brain.
+allowed-tools: Read(~/dev/vault/**), Grep, Glob, Write(~/dev/vault/**), Edit(~/dev/vault/**), Bash(~/dev/vault/.sync/vault-sync.sh)
 ---
 
 Harvest what this session taught and write it into the vault at `~/dev/vault` as one or more atomic zettels.

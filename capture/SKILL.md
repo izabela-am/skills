@@ -1,6 +1,7 @@
 ---
 name: capture
 description: Append a thought to today's daily note in the Obsidian vault at ~/dev/vault. Use when the user wants to capture, jot down, or note something for today — "capture this", "add to my daily note", "jot this down" — from any project or context.
+allowed-tools: Read(~/dev/vault/**), Grep, Glob, Write(~/dev/vault/**), Edit(~/dev/vault/**), Bash(date:*), Bash(~/dev/vault/.sync/vault-sync.sh)
 ---
 
 Append the user's thought to today's daily note in the vault at `~/dev/vault`.
