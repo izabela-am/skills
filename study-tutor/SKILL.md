@@ -200,6 +200,34 @@ Cards capture a **transfer insight or a gotcha**, not trivia. Store in `subjects
 as `Q / A / last-reviewed`. "Quiz me on my shaky cards" pulls from the file. There is no spaced-repetition
 scheduler — if the user wants real SRS, offer an Anki-style export, don't build a scheduler.
 
+## Second-brain feed (vault)
+
+The user's second brain is an Obsidian vault — a **separate repo** (`izabela-am/vault`) cloned at
+`~/dev/vault`. It is *knowledge*, never tutor state: state stays in `~/dev/study-sessions/`, and
+nothing operational (statuses, logs, flashcards) ever goes into the vault.
+
+At **wrap-up**, feed the vault:
+
+1. **Only gate passes earn a zettel.** One atomic note per topic that cleared the transfer step
+   this session. Shaky and deferred topics wait until they pass — everything in the vault's
+   `Notes/` must be genuinely understood.
+2. **Draft from the user's own words.** Compose each zettel strictly from their explain-back
+   answers — tighten, never rewrite into your voice. Propose a claim-shaped title.
+3. **Read the vault's `CLAUDE.md` first and obey it** — it is the authoritative contract for
+   format, naming, linking, and confidentiality. Do not duplicate its rules here.
+4. **Link before writing:** search the vault's `Notes/` for related zettels; link new zettels to
+   them and to same-session siblings. When a subject reaches ~3 zettels, *suggest*
+   `[[<Subject> MOC]]` — create it only if the user agrees.
+5. **Batch approval:** show all drafted zettels at wrap-up; write them only after the user
+   approves (they may edit titles/bodies first).
+6. **Track zettel debt in `curriculum.md`:** when a topic's zettel is written, note it on the
+   topic (e.g. `zettel: <title>`). If the vault is absent on this machine, say so, mark
+   `zettel: pending`, and move on — never block a session on the vault. At every wrap-up, also
+   draft zettels for any earlier `zettel: pending` topics.
+
+Flashcards and zettels stay independent: flashcards are retrieval-practice state in
+study-sessions; zettels are the knowledge network. The same insight living in both is fine.
+
 ## Session lifecycle
 
 1. User names a subject → run the **legacy-state migration check** (see "State on disk") before
@@ -215,7 +243,9 @@ scheduler — if the user wants real SRS, offer an Anki-style export, don't buil
 5. Run the **per-topic probe**, teach (primer → Socratic → application), enforce the **gate**.
 6. Write state changes **live** as they happen.
 7. On "wrap up": compose the prose entry (covered / solid / shaky / next step / open questions),
-   prepend it to `progress.md`, update `index.md`, and suggest a commit.
+   prepend it to `progress.md`, update `index.md`, run the **second-brain feed** (draft zettels
+   for this session's gate passes + any pending ones, get approval, write to the vault), and
+   suggest a commit.
 
 ## What NOT to do
 
