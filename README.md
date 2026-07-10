@@ -14,11 +14,8 @@ Personal Claude Code skills.
 
 ## Using a skill
 
-Make it discoverable by symlinking (or copying) the skill directory into a Claude Code
-skills path — e.g. globally:
+Make it discoverable by symlinking (or copying) the skills directory into a skills path — e.g. globally:
 
 ```sh
-ln -s "$PWD/study-tutor" ~/.claude/skills/study-tutor
+ln -s ~/dev/skills ~/.agents/skills
 ```
-
-Then invoke it as `/study-tutor` (or by natural language matching its description).
