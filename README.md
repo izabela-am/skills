@@ -11,6 +11,7 @@ Personal Claude Code skills.
 | [`skill-smith`](skill-smith/) | Meta-skill that creates, refines, and reviews the other skills here — grill-style design interview, failure-mode diagnosis, quality checklist. |
 | [`capture`](capture/) | Appends a thought verbatim to today's daily note in the Obsidian vault — frictionless burst capture from any terminal. |
 | [`learned`](learned/) | Distills the generalizable concepts from a work session into atomic zettels in the Obsidian vault, applying the vault contract's "public blog post" test. |
+| [`writing`](writing/) | Applies Strunk's *Elements of Style* rules and avoids common AI writing patterns when writing prose for humans — docs, commit messages, UI text. |
 
 ## Using a skill
 
