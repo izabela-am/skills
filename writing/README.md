@@ -79,7 +79,7 @@ The skill identifies and eliminates common LLM writing patterns:
 | Composition principles | `references/03-elementary-principles-of-composition.md` | ~4,500 | Active voice, concision, paragraph structure |
 | Formatting | `references/04-a-few-matters-of-form.md` | ~1,000 | Headings, quotations, formatting conventions |
 | Word choice | `references/05-words-and-expressions-commonly-misused.md` | ~4,000 | Common errors, word selection |
-| AI patterns | `references/00-ai-writing-patterns.md` | ~25,000 | Wikipedia editors' field guide to AI detection |
+| AI patterns | `references/00-ai-writing-patterns.md` | ~14,000 | Wikipedia editors' field guide to AI detection |
 
 ## Usage Examples
 
